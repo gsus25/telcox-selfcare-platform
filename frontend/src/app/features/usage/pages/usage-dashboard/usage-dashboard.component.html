@@ -1,0 +1,134 @@
+<main class="dashboard-shell">
+    <section class="topbar">
+        <div>
+            <p class="eyebrow">TelcoX Selfcare</p>
+            <h1>Mi consumo</h1>
+        </div>
+
+        <div class="topbar-actions">
+            <select
+            class="form-select customer-selector"
+            [value]="customerId"
+            [disabled]="isLoading"
+            (change)="onCustomerChange($event)"
+            >
+            <option *ngFor="let customer of demoCustomers" [value]="customer.id">
+                {{ customer.label }}
+            </option>
+            </select>
+
+            <button
+            type="button"
+            class="btn btn-light refresh-button"
+            [disabled]="isLoading"
+            (click)="loadUsage()"
+            >
+            {{ isLoading ? 'Actualizando...' : 'Actualizar' }}
+            </button>
+        </div>
+    </section>
+
+  <section *ngIf="isLoading && !usage" class="loading-state">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+    <p>Consultando tu consumo en tiempo real...</p>
+  </section>
+
+  <section *ngIf="errorMessage" class="alert alert-danger error-state" role="alert">
+    <strong>No pudimos cargar la información.</strong>
+    <span>{{ errorMessage }}</span>
+
+    <button
+        type="button"
+        class="btn btn-outline-danger btn-sm retry-button"
+        [disabled]="isLoading"
+        (click)="loadUsage()"
+    >
+        Reintentar
+    </button>
+  </section>
+
+  <section *ngIf="usage" class="dashboard-grid">
+    <article class="summary-panel">
+      <div>
+        <p class="panel-label">Cliente</p>
+        <h2>{{ usage.customerName }}</h2>
+        <p class="customer-id">Cuenta {{ usage.customerId }}</p>
+      </div>
+
+      <div class="balance-card">
+        <p>Saldo disponible</p>
+        <strong>${{ usage.balance | number:'1.2-2' }}</strong>
+      </div>
+    </article>
+
+    <article class="usage-card data-card">
+      <div class="card-heading">
+        <div>
+          <p class="panel-label">Datos móviles</p>
+          <h2>{{ usage.dataUsage.used }} de {{ usage.dataUsage.total }} {{ usage.dataUsage.unit }}</h2>
+        </div>
+        <span class="usage-pill">{{ usage.dataUsage.percentage }}%</span>
+      </div>
+
+      <div class="progress telcox-progress" role="progressbar">
+        <div
+          class="progress-bar"
+          [ngClass]="getProgressBarClass(usage.dataUsage.percentage)"
+          [style.width.%]="usage.dataUsage.percentage"
+        ></div>
+      </div>
+
+      <div class="usage-footer">
+        <span>Consumido</span>
+        <strong>
+          Te quedan {{ getRemaining(usage.dataUsage) | number:'1.1-1' }} {{ usage.dataUsage.unit }}
+        </strong>
+      </div>
+    </article>
+
+    <article class="usage-card">
+      <div class="card-heading">
+        <div>
+          <p class="panel-label">Minutos</p>
+          <h2>{{ usage.minutesUsage.used }} de {{ usage.minutesUsage.total }}</h2>
+        </div>
+        <span class="usage-pill">{{ usage.minutesUsage.percentage }}%</span>
+      </div>
+
+      <div class="progress telcox-progress" role="progressbar">
+        <div
+          class="progress-bar"
+          [ngClass]="getProgressBarClass(usage.minutesUsage.percentage)"
+          [style.width.%]="usage.minutesUsage.percentage"
+        ></div>
+      </div>
+
+      <div class="usage-footer">
+        <span>Consumido</span>
+        <strong>
+          Te quedan {{ getRemaining(usage.minutesUsage) | number:'1.0-0' }} minutos
+        </strong>
+      </div>
+    </article>
+
+    <article class="status-panel">
+      <div>
+        <p class="panel-label">Estado del servicio</p>
+        <h2>Activo</h2>
+        <p>Tu línea está operativa y sincronizada con el BSS.</p>
+      </div>
+
+      <div class="status-dot"></div>
+    </article>
+
+    <article class="billing-panel">
+      <p class="panel-label">Última actualización</p>
+      <h2>{{ usage.lastUpdated | date:'medium' }}</h2>
+      <p>
+        Los datos se consultan desde el backend que simula la integración con BSS.
+      </p>
+    </article>
+  </section>
+</main>

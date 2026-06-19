@@ -1,0 +1,300 @@
+.dashboard-shell {
+  min-height: 100vh;
+  padding: 32px;
+  background:
+    linear-gradient(135deg, rgba(155, 25, 127, 0.96), rgba(113, 16, 93, 0.96)) 0 0 / 100% 260px no-repeat,
+    var(--telcox-bg);
+}
+
+.topbar {
+  max-width: 1120px;
+  margin: 0 auto 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  color: #ffffff;
+}
+
+.eyebrow,
+.panel-label {
+  margin: 0 0 6px;
+  color: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.topbar h1 {
+  margin: 0;
+  font-size: 2.4rem;
+  font-weight: 800;
+}
+
+.refresh-button {
+  min-width: 132px;
+  border: 0;
+  color: var(--telcox-primary-dark);
+  font-weight: 700;
+  box-shadow: 0 12px 28px rgba(31, 23, 36, 0.18);
+}
+
+.refresh-button:hover {
+  color: var(--telcox-primary);
+  background: var(--telcox-accent);
+}
+
+.loading-state,
+.error-state,
+.dashboard-grid {
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.loading-state {
+  min-height: 320px;
+  display: grid;
+  place-items: center;
+  gap: 16px;
+  padding: 48px;
+  background: var(--telcox-card);
+  border: 1px solid var(--telcox-border);
+  border-radius: 8px;
+  box-shadow: 0 18px 45px rgba(31, 23, 36, 0.12);
+  color: var(--telcox-muted);
+}
+
+.loading-state p {
+  margin: 0;
+  font-weight: 600;
+}
+
+.error-state {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 16px;
+  border-radius: 8px;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 18px;
+}
+
+.summary-panel,
+.usage-card,
+.status-panel,
+.billing-panel {
+  background: var(--telcox-card);
+  border: 1px solid var(--telcox-border);
+  border-radius: 8px;
+  box-shadow: 0 18px 45px rgba(31, 23, 36, 0.1);
+}
+
+.summary-panel {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 22px;
+}
+
+.summary-panel .panel-label,
+.usage-card .panel-label,
+.status-panel .panel-label,
+.billing-panel .panel-label {
+  color: var(--telcox-muted);
+}
+
+.summary-panel h2,
+.usage-card h2,
+.status-panel h2,
+.billing-panel h2 {
+  margin: 0;
+  color: var(--telcox-ink);
+  font-size: 1.45rem;
+  font-weight: 800;
+}
+
+.customer-id {
+  margin: 6px 0 0;
+  color: var(--telcox-muted);
+  font-weight: 600;
+}
+
+.balance-card {
+  min-width: 240px;
+  padding: 18px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--telcox-accent), #ffe17a);
+  color: var(--telcox-primary-dark);
+}
+
+.balance-card p {
+  margin: 0 0 4px;
+  font-weight: 700;
+}
+
+.balance-card strong {
+  display: block;
+  font-size: 2rem;
+  line-height: 1.1;
+}
+
+.usage-card,
+.status-panel,
+.billing-panel {
+  padding: 22px;
+}
+
+.data-card {
+  border-top: 5px solid var(--telcox-accent);
+}
+
+.card-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.usage-pill {
+  min-width: 58px;
+  padding: 8px 10px;
+  border-radius: 999px;
+  background: var(--telcox-primary-soft);
+  color: var(--telcox-primary);
+  text-align: center;
+  font-weight: 800;
+}
+
+.telcox-progress {
+  height: 14px;
+  overflow: hidden;
+  background: #eee7ef;
+  border-radius: 999px;
+}
+
+.telcox-progress .progress-bar {
+  border-radius: 999px;
+}
+
+.bg-success {
+  background-color: var(--telcox-success) !important;
+}
+
+.bg-warning {
+  background-color: var(--telcox-warning) !important;
+}
+
+.bg-danger {
+  background-color: var(--telcox-danger) !important;
+}
+
+.usage-footer {
+  margin-top: 14px;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  color: var(--telcox-muted);
+}
+
+.usage-footer strong {
+  color: var(--telcox-ink);
+  text-align: right;
+}
+
+.status-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.status-panel p,
+.billing-panel p {
+  margin: 8px 0 0;
+  color: var(--telcox-muted);
+}
+
+.status-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--telcox-success);
+  box-shadow: 0 0 0 8px rgba(22, 163, 74, 0.12);
+}
+
+.billing-panel {
+  border-left: 5px solid var(--telcox-primary);
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.customer-selector {
+  width: 220px;
+  border: 0;
+  color: var(--telcox-primary-dark);
+  font-weight: 700;
+  box-shadow: 0 12px 28px rgba(31, 23, 36, 0.18);
+}
+
+.error-state {
+  align-items: start;
+}
+
+.retry-button {
+  width: fit-content;
+  font-weight: 700;
+}
+
+@media (max-width: 768px) {
+  .dashboard-shell {
+    padding: 20px;
+    background:
+      linear-gradient(135deg, rgba(155, 25, 127, 0.96), rgba(113, 16, 93, 0.96)) 0 0 / 100% 300px no-repeat,
+      var(--telcox-bg);
+  }
+
+  .topbar,
+  .summary-panel,
+  .card-heading,
+  .usage-footer,
+  .status-panel {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .topbar h1 {
+    font-size: 2rem;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .balance-card {
+    min-width: 0;
+  }
+
+  .usage-footer strong {
+    text-align: left;
+  }
+  .topbar-actions {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .customer-selector {
+    width: 100%;
+  }
+}

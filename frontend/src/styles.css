@@ -1,1 +1,29 @@
-/* You can add global styles to this file, and also import other style files */
+@import "bootstrap/dist/css/bootstrap.min.css";
+
+:root {
+  --telcox-primary: #9b197f;
+  --telcox-primary-dark: #71105d;
+  --telcox-primary-soft: #f7e8f3;
+  --telcox-accent: #ffc400;
+  --telcox-accent-dark: #d99f00;
+  --telcox-success: #16a34a;
+  --telcox-warning: #f59e0b;
+  --telcox-danger: #dc3545;
+  --telcox-ink: #1f1724;
+  --telcox-muted: #6b6470;
+  --telcox-bg: #f6f2f7;
+  --telcox-card: #ffffff;
+  --telcox-border: #e8ddea;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--telcox-bg);
+  color: var(--telcox-ink);
+  font-family: Arial, Helvetica, sans-serif;
+}

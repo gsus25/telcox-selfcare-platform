@@ -1,12 +1,11 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+
+import { UsageDashboardComponent } from './features/usage/pages/usage-dashboard/usage-dashboard.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  standalone: true,
+  imports: [UsageDashboardComponent],
+  template: '<app-usage-dashboard />'
 })
-export class AppComponent {
-  title = 'frontend';
-}
+export class AppComponent {}
