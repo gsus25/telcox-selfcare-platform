@@ -56,7 +56,9 @@ DATABASE_PASSWORD=telcox_password
 
 Desde la raiz del proyecto, inicializa los contenedores:
 
+```bash
 docker compose up --build
+```
 
 Servicios disponibles:
 - Frontend: http://localhost:4200
@@ -64,11 +66,17 @@ Servicios disponibles:
 - MySQL:    localhost:3307 (No expone interfaz web, accesible via cliente SQL).
 
 Para detener los servicios:
+
+```bash
 docker compose down
+```
 
 Para reiniciar desde cero (incluyendo la eliminacion de volumenes de base de datos):
+
+```bash
 docker compose down -v
 docker compose up --build
+```
 
 ## Documentacion del Proyecto
 
