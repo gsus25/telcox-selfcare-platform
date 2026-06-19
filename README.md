@@ -57,7 +57,7 @@ Esto permite demostrar una integracion real de backend con base de datos sin con
 
 ### Puerto backend
 
-El backend corre internamente en el puerto `5000`, pero se expone localmente en `5001` para evitar conflictos comunes con servicios locales en macOS.
+El backend corre internamente en el puerto `5000`, pero se expone localmente en `5001`
 
 ## Requisitos previos
 
