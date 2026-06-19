@@ -73,6 +73,6 @@ docker compose up --build
 ## Documentacion del Proyecto
 
 Toda la documentacion tecnica se encuentra en la carpeta /docs:
-- Arquitectura y Decisiones Tecnicas: ./docs/architecture.md
-- Documentacion de la API: ./docs/api.md
-- Estrategia de Pruebas: ./docs/testing.md
+- [Arquitectura y Decisiones Tecnicas](./docs/architecture.md)
+- [Documentacion de la API](./docs/api.md)
+- [Estrategia de Pruebas](./docs/testing.md)
