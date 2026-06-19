@@ -18,14 +18,15 @@ La aplicacion esta enfocada en demostrar:
 - Backend REST con manejo de excepciones.
 - Persistencia demo en MySQL.
 - Contenerizacion con Docker Compose.
-- Pruebas automatizadas del backend.
+- Pruebas automatizadas backend y frontend.
 
 ## Stack tecnologico
 
 - Frontend: Angular, TypeScript, CSS, Bootstrap.
 - Backend: Python, Flask, Flask-CORS.
 - Base de datos: MySQL.
-- Testing: pytest.
+- Testing backend: pytest.
+- Testing frontend: Angular TestBed, Jasmine, Karma, ChromeHeadless.
 - DevOps: Docker, Docker Compose.
 
 ## Arquitectura
@@ -77,7 +78,7 @@ Esto permite demostrar una integracion real de backend con base de datos sin con
 
 ### Puerto backend
 
-El backend corre internamente en el puerto `5000`, pero se expone localmente en `5001` para evitar conflictos
+El backend corre internamente en el puerto `5000`, pero se expone localmente en `5001` para evitar conflictos comunes con servicios locales en macOS.
 
 ## Requisitos previos
 
@@ -222,6 +223,8 @@ La interfaz muestra mensajes amigables cuando:
 
 ## Ejecutar pruebas
 
+### Backend
+
 Con Docker:
 
 ```bash
@@ -234,12 +237,33 @@ Resultado esperado:
 4 passed
 ```
 
-Las pruebas cubren:
+Las pruebas backend cubren:
 
 - Health check.
 - Consulta exitosa de consumo.
 - Cliente no encontrado.
 - BSS no disponible.
+
+### Frontend
+
+Desde la carpeta `frontend`:
+
+```bash
+cd frontend
+npm test -- --watch=false --browsers=ChromeHeadless
+```
+
+Resultado esperado:
+
+```txt
+TOTAL: 3 SUCCESS
+```
+
+Las pruebas frontend cubren:
+
+- Creacion del shell principal de Angular.
+- Servicio `UsageApiService`, validando que llama correctamente al endpoint de consumo.
+- Componente `UsageDashboardComponent`, validando que muestra un mensaje amigable cuando el backend no esta disponible.
 
 ## Datos demo
 
