@@ -101,9 +101,11 @@ Servicios disponibles:
 
 ```txt
 Frontend: http://localhost:4200
-Backend:  http://localhost:5001
+Backend:  http://localhost:5001/api/health
 MySQL:    localhost:3307
 ```
+
+Nota: MySQL no expone una interfaz web. El puerto `3307` queda disponible para conectarse desde un cliente MySQL local usando las credenciales documentadas en `.env.example`.
 
 Para detener los servicios:
 
