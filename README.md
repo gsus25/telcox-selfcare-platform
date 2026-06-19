@@ -159,3 +159,9 @@ npm test -- --watch=false --browsers=ChromeHeadless
 ```
 
 Para detalles sobre la estrategia de testing, herramientas utilizadas y cobertura, visita la [Documentacion de Pruebas](./docs/testing.md).
+
+## Modulo de consumo
+
+El modulo principal permite visualizar saldo, consumo de datos moviles, consumo de minutos, estado del servicio y ultima consulta desde una interfaz de autogestion.
+
+Para entender el funcionamiento del modulo, sus archivos principales, flujo de datos, estados de UI y escenarios de error, revisa la [Documentacion del Modulo de Consumo](./docs/consumption-module.md).
