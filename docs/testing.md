@@ -1,349 +1,51 @@
 # Testing Documentation
 
-Documentacion de pruebas para TelcoX Selfcare Platform.
+La estrategia de pruebas de TelcoX Selfcare Platform cubre la validacion unitaria y de integracion en ambas capas de la aplicacion (Frontend y Backend).
 
-## Objetivo
+## 1. Pruebas Backend (pytest)
 
-Validar que el modulo de visualizacion de consumo funciona correctamente desde backend, API, base de datos y frontend.
+El backend utiliza pytest para validar la logica de la API y el manejo de excepciones. Las variables de entorno son aisladas y el servicio BSS es emulado usando monkeypatch para evitar dependencia directa de MySQL durante los tests unitarios, garantizando velocidad y estabilidad.
 
-El alcance de pruebas cubre:
-
-- Health check del backend.
-- Consulta exitosa de consumo.
-- Cliente inexistente.
-- BSS/MySQL no disponible.
-- Servicio HTTP del frontend.
-- Componente principal del dashboard.
-- Visualizacion de errores amigables en la interfaz.
-
-## Pruebas automatizadas
-
-El proyecto incluye pruebas automatizadas en backend y frontend.
-
-Backend:
-
-```txt
-backend/tests/test_usage.py
-```
-
-Frontend:
-
-```txt
-frontend/src/app/app.component.spec.ts
-frontend/src/app/features/usage/services/usage-api.service.spec.ts
-frontend/src/app/features/usage/pages/usage-dashboard/usage-dashboard.component.spec.ts
-```
-
-## Ejecutar pruebas backend
-
-Desde la raiz del proyecto:
+Ejecucion:
+Desde la raiz del proyecto, ejecuta el contenedor de pruebas:
 
 ```bash
 docker compose run --rm backend pytest
 ```
 
-Resultado esperado:
+Resultado esperado: 4 passed
 
-```txt
-4 passed
-```
+Casos Cubiertos:
+- test_health_check: Valida el status 200 OK.
+- test_successful_usage: Verifica que el contrato JSON retorne la estructura correcta y calcule los porcentajes adecuados.
+- test_customer_not_found: Valida la respuesta 404 estructurada.
+- test_bss_unavailable: Simula una caida del servicio MySQL y valida el codigo 503.
 
-## Casos cubiertos por tests backend
+## 2. Pruebas Frontend (Angular TestBed)
 
-### 1. Health check
+Las pruebas de frontend validan la renderizacion del DOM, la interaccion de los servicios y el manejo de estados visuales.
 
-Valida que el backend responda correctamente.
-
-Endpoint:
-
-```http
-GET /api/health
-```
-
-Resultado esperado:
-
-```json
-{
-  "status": "ok"
-}
-```
-
-### 2. Consulta exitosa de consumo
-
-Valida que la API devuelva el contrato esperado para un cliente existente.
-
-Endpoint:
-
-```http
-GET /api/customers/1001/usage
-```
-
-Aspectos verificados:
-
-- Status HTTP `200`.
-- `customerId`.
-- `customerName`.
-- `balance`.
-- Porcentaje de consumo de datos.
-- Porcentaje de consumo de minutos.
-- Campo `lastUpdated`.
-
-### 3. Cliente inexistente
-
-Valida que la API responda correctamente cuando el cliente no existe.
-
-Endpoint:
-
-```http
-GET /api/customers/9999/usage
-```
-
-Resultado esperado:
-
-```txt
-404 Not Found
-```
-
-Body:
-
-```json
-{
-  "error": "customer_not_found",
-  "message": "No encontramos informacion de consumo para este cliente."
-}
-```
-
-### 4. BSS no disponible
-
-Valida que la API maneje correctamente una falla en la fuente de datos.
-
-Resultado esperado:
-
-```txt
-503 Service Unavailable
-```
-
-Body:
-
-```json
-{
-  "error": "bss_unavailable",
-  "message": "El sistema BSS no esta disponible temporalmente."
-}
-```
-
-## Por que los tests backend mockean el BSS
-
-Los tests unitarios de API no dependen de MySQL directamente. En su lugar, simulan el comportamiento del servicio BSS usando `monkeypatch`.
-
-Esto permite probar la logica HTTP de forma rapida y estable:
-
-- Caso exitoso.
-- Error de cliente inexistente.
-- Error de BSS no disponible.
-
-La integracion real con MySQL se valida levantando el stack completo con Docker Compose.
-
-## Ejecutar pruebas frontend
-
-Desde la carpeta `frontend`:
+Ejecucion:
 
 ```bash
 cd frontend
 npm test -- --watch=false --browsers=ChromeHeadless
 ```
 
-Resultado esperado:
+Resultado esperado: TOTAL: 3 SUCCESS
 
-```txt
-TOTAL: 3 SUCCESS
-```
+Casos Cubiertos:
+- AppComponent: Valida la carga del App Shell.
+- UsageApiService: Intercepta peticiones HTTP para asegurar que el servicio solicita el endpoint correcto (GET /api/customers/1001/usage) y mapea bien el payload.
+- UsageDashboardComponent: Renderiza el componente forzando un error en el servicio, verificando que el DOM muestre el mensaje amigable: "No pudimos conectar con el backend".
 
-## Casos cubiertos por tests frontend
+## 3. Pruebas de Integracion Manual (End-to-End Visual)
 
-### 1. App shell
+Para validar la integracion real entre contenedores (UI -> API -> DB):
+1. Levanta el stack: docker compose up --build
+2. Ingresa a http://localhost:4200
+3. Valida que los datos de "Ana Torres" (Seed de MySQL) se muestren correctamente.
+4. Prueba de Resiliencia: Deten el servicio mysql temporalmente (docker compose stop mysql) y da clic en "Actualizar" en el dashboard. Deberas observar el manejo de error en la UI.
 
-Valida que el componente principal de Angular se cree correctamente y renderice el dashboard.
-
-Archivo:
-
-```txt
-frontend/src/app/app.component.spec.ts
-```
-
-### 2. UsageApiService
-
-Valida que el servicio Angular haga una peticion `GET` al endpoint correcto:
-
-```txt
-http://localhost:5001/api/customers/1001/usage
-```
-
-Tambien valida que el payload recibido conserve los campos principales del modulo de consumo:
-
-- Nombre del cliente.
-- Saldo.
-- Porcentaje de datos.
-- Porcentaje de minutos.
-
-Archivo:
-
-```txt
-frontend/src/app/features/usage/services/usage-api.service.spec.ts
-```
-
-### 3. UsageDashboardComponent
-
-Valida que el dashboard muestre un mensaje amigable cuando la API falla por indisponibilidad del backend.
-
-Mensaje esperado:
-
-```txt
-No pudimos conectar con el backend
-```
-
-Archivo:
-
-```txt
-frontend/src/app/features/usage/pages/usage-dashboard/usage-dashboard.component.spec.ts
-```
-
-## Pruebas manuales de API
-
-Primero levantar el stack:
-
-```bash
-docker compose up --build
-```
-
-### Health check
-
-```bash
-curl http://localhost:5001/api/health
-```
-
-Respuesta esperada:
-
-```json
-{
-  "status": "ok"
-}
-```
-
-### Cliente principal
-
-```bash
-curl http://localhost:5001/api/customers/1001/usage
-```
-
-Resultado esperado:
-
-- Status `200`.
-- Cliente `Ana Torres`.
-- Saldo `18.75`.
-- Consumo de datos y minutos.
-
-### Segundo cliente demo
-
-```bash
-curl http://localhost:5001/api/customers/1002/usage
-```
-
-Resultado esperado:
-
-- Status `200`.
-- Cliente `Carlos Mejia`.
-- Datos provenientes de MySQL.
-
-### Cliente inexistente
-
-```bash
-curl http://localhost:5001/api/customers/9999/usage
-```
-
-Resultado esperado:
-
-- Status `404`.
-- Error `customer_not_found`.
-
-## Pruebas manuales de frontend
-
-Levantar la aplicacion:
-
-```bash
-docker compose up --build
-```
-
-Abrir:
-
-```txt
-http://localhost:4200
-```
-
-Validar:
-
-- El dashboard carga sin errores.
-- Se muestra el nombre del cliente.
-- Se muestra el saldo disponible.
-- Se muestra el consumo de datos.
-- Se muestra el consumo de minutos.
-- Las barras de progreso tienen porcentaje correcto.
-- Se muestra la fecha de ultima actualizacion.
-- El boton `Actualizar` vuelve a consultar el backend.
-
-## Prueba de error de conexion en UI
-
-Este caso valida que la interfaz muestre un mensaje amigable cuando el backend no esta disponible.
-
-Pasos:
-
-1. Levantar la aplicacion:
-
-```bash
-docker compose up --build
-```
-
-2. Abrir:
-
-```txt
-http://localhost:4200
-```
-
-3. Detener los servicios con:
-
-```bash
-Ctrl + C
-```
-
-4. Volver a abrir la UI o presionar el boton `Actualizar` cuando el backend este detenido.
-
-Resultado esperado:
-
-```txt
-No pudimos conectar con el backend. Verifica que el servicio este encendido e intenta nuevamente.
-```
-
-## Prueba de reinicio desde cero
-
-Este caso valida que MySQL se inicialice correctamente desde `infra/mysql/init.sql`.
-
-Ejecutar:
-
-```bash
-docker compose down -v
-docker compose up --build
-```
-
-Luego probar:
-
-```bash
-curl http://localhost:5001/api/customers/1001/usage
-curl http://localhost:5001/api/customers/1002/usage
-```
-
-Resultado esperado:
-
-- Ambos clientes existen.
-- Los datos se cargan nuevamente desde el seed SQL.
-
+*(Para los comandos precisos de validacion de endpoints via consola, consulta la Documentacion de la API (api.md)).*
 
