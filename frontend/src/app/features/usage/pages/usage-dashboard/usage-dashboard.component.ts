@@ -14,12 +14,7 @@ import { UsageApiService } from '../../services/usage-api.service';
   styleUrl: './usage-dashboard.component.css'
 })
 export class UsageDashboardComponent implements OnInit {
-  customerId = '1001';
-
-  readonly demoCustomers = [
-    { id: '1001', label: 'Ana Torres' },
-    { id: '9999', label: 'Cliente no encontrado' }
-  ];
+  private readonly customerId = '1001';
 
   usage: CustomerUsage | null = null;
   isLoading = false;
@@ -51,11 +46,6 @@ export class UsageDashboardComponent implements OnInit {
       });
   }
 
-  onCustomerChange(event: Event): void {
-    const select = event.target as HTMLSelectElement;
-    this.customerId = select.value;
-    this.loadUsage();
-  }
 
   getRemaining(bucket: UsageBucket): number {
     return Math.max(bucket.total - bucket.used, 0);

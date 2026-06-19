@@ -1,7 +1,10 @@
 from flask import Blueprint, jsonify
 
-from app.services.mock_bss_service import CustomerNotFoundError, get_customer_usage
-
+from app.services.mock_bss_service import (
+    BssUnavailableError,
+    CustomerNotFoundError,
+    get_customer_usage,
+)
 
 usage_bp = Blueprint("usage", __name__, url_prefix="/api")
 
@@ -21,6 +24,11 @@ def customer_usage(customer_id):
             "error": "customer_not_found",
             "message": "No encontramos informacion de consumo para este cliente."
         }), 404
+    except BssUnavailableError:
+        return jsonify({
+            "error": "bss_unavailable",
+            "message": "El sistema BSS no esta disponible temporalmente."
+        }), 503
     except Exception:
         return jsonify({
             "error": "internal_server_error",

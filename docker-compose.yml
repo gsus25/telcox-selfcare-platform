@@ -1,4 +1,23 @@
 services:
+  mysql:
+    image: mysql:8.4
+    container_name: telcox-mysql
+    environment:
+      MYSQL_DATABASE: telcox_db
+      MYSQL_USER: telcox_user
+      MYSQL_PASSWORD: telcox_password
+      MYSQL_ROOT_PASSWORD: root_password
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./infra/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   backend:
     build:
       context: ./backend
@@ -8,5 +27,16 @@ services:
     environment:
       FLASK_ENV: development
       PYTHONPATH: /app
+      DATABASE_HOST: mysql
+      DATABASE_PORT: 3306
+      DATABASE_NAME: telcox_db
+      DATABASE_USER: telcox_user
+      DATABASE_PASSWORD: telcox_password
     volumes:
       - ./backend:/app
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+volumes:
+  mysql-data:

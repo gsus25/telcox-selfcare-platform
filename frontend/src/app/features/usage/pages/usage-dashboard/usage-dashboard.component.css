@@ -239,13 +239,6 @@
   gap: 12px;
 }
 
-.customer-selector {
-  width: 220px;
-  border: 0;
-  color: var(--telcox-primary-dark);
-  font-weight: 700;
-  box-shadow: 0 12px 28px rgba(31, 23, 36, 0.18);
-}
 
 .error-state {
   align-items: start;
@@ -294,7 +287,4 @@
     align-items: stretch;
   }
 
-  .customer-selector {
-    width: 100%;
-  }
 }

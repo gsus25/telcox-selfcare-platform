@@ -4,26 +4,15 @@
             <p class="eyebrow">TelcoX Selfcare</p>
             <h1>Mi consumo</h1>
         </div>
-
+        
         <div class="topbar-actions">
-            <select
-            class="form-select customer-selector"
-            [value]="customerId"
-            [disabled]="isLoading"
-            (change)="onCustomerChange($event)"
-            >
-            <option *ngFor="let customer of demoCustomers" [value]="customer.id">
-                {{ customer.label }}
-            </option>
-            </select>
-
             <button
-            type="button"
-            class="btn btn-light refresh-button"
-            [disabled]="isLoading"
-            (click)="loadUsage()"
+                type="button"
+                class="btn btn-light refresh-button"
+                [disabled]="isLoading"
+                (click)="loadUsage()"
             >
-            {{ isLoading ? 'Actualizando...' : 'Actualizar' }}
+                {{ isLoading ? 'Actualizando...' : 'Actualizar' }}
             </button>
         </div>
     </section>
