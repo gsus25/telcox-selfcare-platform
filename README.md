@@ -31,36 +31,15 @@ La aplicacion esta enfocada en demostrar:
 
 ## Arquitectura
 
+Flujo principal de la solucion:
+
 ```txt
-telcox-selfcare-platform/
-├── backend/
-│   ├── app/
-│   │   ├── api/
-│   │   │   └── usage_routes.py
-│   │   ├── services/
-│   │   │   └── mock_bss_service.py
-│   │   └── main.py
-│   ├── tests/
-│   │   └── test_usage.py
-│   ├── Dockerfile
-│   └── requirements.txt
-│
-├── frontend/
-│   ├── src/
-│   │   └── app/
-│   │       └── features/
-│   │           └── usage/
-│   ├── Dockerfile
-│   └── package.json
-│
-├── infra/
-│   └── mysql/
-│       └── init.sql
-│
-├── docs/
-├── docker-compose.yml
-└── README.md
+Usuario -> Angular Dashboard -> Flask API -> Servicio BSS simulado -> MySQL
 ```
+
+El frontend consume una API REST del backend. El backend delega la consulta de consumo a un servicio que simula la integracion con BSS/CRM y obtiene los datos desde MySQL.
+
+Para un desglose completo de la estructura de carpetas, patrones de diseno, responsabilidades y flujo de datos, revisa la [Documentacion de Arquitectura](./docs/architecture.md).
 
 ## Decisiones tecnicas
 
@@ -139,132 +118,6 @@ docker compose down -v
 docker compose up --build
 ```
 
-## Endpoints principales
-
-Health check:
-
-```http
-GET /api/health
-```
-
-URL local:
-
-```txt
-http://localhost:5001/api/health
-```
-
-Consulta de consumo:
-
-```http
-GET /api/customers/{customerId}/usage
-```
-
-Cliente demo principal:
-
-```txt
-http://localhost:5001/api/customers/1001/usage
-```
-
-Segundo cliente demo:
-
-```txt
-http://localhost:5001/api/customers/1002/usage
-```
-
-Cliente inexistente:
-
-```txt
-http://localhost:5001/api/customers/9999/usage
-```
-
-## Ejemplo de respuesta exitosa
-
-```json
-{
-  "customerId": "1001",
-  "customerName": "Ana Torres",
-  "balance": 18.75,
-  "dataUsage": {
-    "used": 7.2,
-    "total": 20.0,
-    "unit": "GB",
-    "percentage": 36
-  },
-  "minutesUsage": {
-    "used": 320,
-    "total": 1000,
-    "unit": "minutes",
-    "percentage": 32
-  },
-  "lastUpdated": "2026-06-19T16:30:00+00:00"
-}
-```
-
-## Manejo de errores
-
-La API maneja los siguientes casos:
-
-```txt
-404 customer_not_found
-Cliente no encontrado.
-
-503 bss_unavailable
-El sistema BSS/MySQL no esta disponible temporalmente.
-
-500 internal_server_error
-Error inesperado del backend.
-```
-
-La interfaz muestra mensajes amigables cuando:
-
-- El backend no esta disponible.
-- No existe informacion para el cliente.
-- Ocurre un error inesperado al consultar el consumo.
-
-## Ejecutar pruebas
-
-### Backend
-
-Con Docker:
-
-```bash
-docker compose run --rm backend pytest
-```
-
-Resultado esperado:
-
-```txt
-4 passed
-```
-
-Las pruebas backend cubren:
-
-- Health check.
-- Consulta exitosa de consumo.
-- Cliente no encontrado.
-- BSS no disponible.
-
-### Frontend
-
-Desde la carpeta `frontend`:
-
-```bash
-cd frontend
-npm test -- --watch=false --browsers=ChromeHeadless
-```
-
-Resultado esperado:
-
-```txt
-TOTAL: 3 SUCCESS
-```
-
-Las pruebas frontend cubren:
-
-- Creacion del shell principal de Angular.
-- Servicio `UsageApiService`, validando que llama correctamente al endpoint de consumo.
-- Componente `UsageDashboardComponent`, validando que muestra un mensaje amigable cuando el backend no esta disponible.
-
 ## Datos demo
 
 Los datos iniciales se cargan desde:
@@ -280,11 +133,27 @@ Clientes disponibles:
 1002 - Carlos Mejia
 ```
 
-## Flujo de uso
+El dashboard consulta por defecto el cliente `1001`, simulando un usuario autenticado.
 
-1. El usuario abre el dashboard en `http://localhost:4200`.
-2. Angular solicita el consumo del cliente demo `1001`.
-3. Flask recibe la solicitud en `/api/customers/1001/usage`.
-4. El servicio simula la consulta al BSS usando MySQL.
-5. La API responde saldo, datos, minutos y fecha de actualizacion.
-6. La interfaz muestra la informacion en tarjetas visuales con barras de progreso.
+## API REST
+
+El backend expone endpoints para consultar el estado de salud del sistema y el consumo del cliente.
+
+Para ver los contratos de los endpoints, ejemplos de peticiones/respuestas JSON y codigos de error, consulta la [Documentacion de la API](./docs/api.md).
+
+## Ejecutar pruebas
+
+Backend:
+
+```bash
+docker compose run --rm backend pytest
+```
+
+Frontend:
+
+```bash
+cd frontend
+npm test -- --watch=false --browsers=ChromeHeadless
+```
+
+Para detalles sobre la estrategia de testing, herramientas utilizadas y cobertura, visita la [Documentacion de Pruebas](./docs/testing.md).
