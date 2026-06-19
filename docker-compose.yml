@@ -4,8 +4,9 @@ services:
       context: ./backend
     container_name: telcox-backend
     ports:
-      - "5000:5000"
+      - "5001:5000"
     environment:
       FLASK_ENV: development
+      PYTHONPATH: /app
     volumes:
       - ./backend:/app
