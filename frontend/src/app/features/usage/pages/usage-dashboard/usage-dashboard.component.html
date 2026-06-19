@@ -4,7 +4,7 @@
             <p class="eyebrow">TelcoX Selfcare</p>
             <h1>Mi consumo</h1>
         </div>
-        
+
         <div class="topbar-actions">
             <button
                 type="button"
@@ -113,8 +113,8 @@
     </article>
 
     <article class="billing-panel">
-      <p class="panel-label">Última actualización</p>
-      <h2>{{ usage.lastUpdated | date:'medium' }}</h2>
+      <p class="panel-label">Última consulta</p>
+      <h2>{{ lastRefreshAt | date:'medium' }}</h2>
       <p>
         Los datos se consultan desde el backend que simula la integración con BSS.
       </p>

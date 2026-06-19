@@ -19,6 +19,7 @@ export class UsageDashboardComponent implements OnInit {
   usage: CustomerUsage | null = null;
   isLoading = false;
   errorMessage = '';
+  lastRefreshAt: Date | null = null;
 
   constructor(private readonly usageApiService: UsageApiService) {}
 
@@ -38,6 +39,7 @@ export class UsageDashboardComponent implements OnInit {
       .subscribe({
         next: (usage) => {
           this.usage = usage;
+          this.lastRefreshAt = new Date();
         },
         error: (error: HttpErrorResponse) => {
           this.usage = null;
