@@ -19,9 +19,12 @@ Valida el estado del servicio backend.
 
 - URL: GET /api/health
 - Response (200 OK):
+
+```json
 {
   "status": "ok"
 }
+```
 
 ### 2. Consulta de Consumo del Cliente
 Obtiene el saldo, consumo de datos, consumo de minutos y fecha de ultima actualizacion.
@@ -37,45 +40,99 @@ Clientes demo disponibles:
 #### Respuesta Exitosa (200 OK)
 *Nota: Los valores numericos de consumo (balance, total, used) se manejan con un maximo de 2 decimales para precision en UI.*
 
+```json
 {
+  "balance": 18.75,
   "customerId": "1001",
   "customerName": "Ana Torres",
-  "balance": 18.75,
   "dataUsage": {
-    "used": 7.20,
-    "total": 20.00,
+    "percentage": 36,
+    "total": 20.0,
     "unit": "GB",
-    "percentage": 36
+    "used": 7.2
   },
+  "lastUpdated": "2026-06-19T16:30:00+00:00",
   "minutesUsage": {
-    "used": 320,
+    "percentage": 32,
     "total": 1000,
     "unit": "minutes",
-    "percentage": 32
-  },
-  "lastUpdated": "2026-06-19T16:30:00+00:00"
+    "used": 320
+  }
 }
+```
 
 #### Respuestas de Error
 La API devuelve errores estructurados para facilitar su manejo en el frontend.
 
-404 Not Found (Cliente inexistente)
+```json
+{
+  "error": "codigo_del_error",
+  "message": "Mensaje legible para el usuario o consumidor de API."
+}
+```
+
+### Cliente no encontrado
+
+Ocurre cuando el `customerId` no existe en el BSS/CRM simulado.
+
+Request:
+
+```txt
+http://localhost:5001/api/customers/9999/usage
+```
+
+Status:
+
+```txt
+404 Not Found
+```
+
+Body:
+
+```json
 {
   "error": "customer_not_found",
   "message": "No encontramos informacion de consumo para este cliente."
 }
+```
 
-503 Service Unavailable (BSS/MySQL caido)
+### BSS no disponible
+
+Ocurre cuando el backend no puede consultar la fuente de datos del BSS/CRM simulado, por ejemplo si MySQL no esta disponible.
+
+Status:
+
+```txt
+503 Service Unavailable
+```
+
+Body:
+
+```json
 {
   "error": "bss_unavailable",
   "message": "El sistema BSS no esta disponible temporalmente."
 }
+```
 
+### Error interno
+
+Ocurre ante un error inesperado del backend.
+
+Status:
+
+```txt
 500 Internal Server Error
+```
+
+Body:
+
+```json
 {
   "error": "internal_server_error",
   "message": "No pudimos consultar el consumo en este momento."
 }
+```
 
 ---
 
@@ -83,11 +140,21 @@ La API devuelve errores estructurados para facilitar su manejo en el frontend.
 
 Con el entorno Docker en ejecucion, puedes validar los endpoints rapidamente:
 
-# Health check
+### Health check
+
+```bash
 curl http://localhost:5001/api/health
+```
 
-# Cliente exitoso
+### Cliente exitoso
+
+```bash
 curl http://localhost:5001/api/customers/1001/usage
+```
 
-# Cliente inexistente
+### Cliente inexistente
+
+```bash
 curl http://localhost:5001/api/customers/9999/usage
+```
+
