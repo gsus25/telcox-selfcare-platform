@@ -6,7 +6,9 @@ Plataforma web de autogestion para clientes de telecomunicaciones. Permite visua
 
 El proyecto implementa un flujo end-to-end para el modulo de visualizacion de consumo:
 
+```txt
 Angular UI -> Flask REST API -> MySQL -> respuesta al usuario
+```
 
 La aplicacion esta enfocada en demostrar:
 - Integracion frontend-backend.
@@ -34,6 +36,7 @@ La aplicacion esta enfocada en demostrar:
 
 El archivo .env.example documenta las variables usadas por la solucion:
 
+```env
 MYSQL_DATABASE=telcox_db
 MYSQL_USER=telcox_user
 MYSQL_PASSWORD=telcox_password
@@ -47,6 +50,7 @@ DATABASE_PORT=3306
 DATABASE_NAME=telcox_db
 DATABASE_USER=telcox_user
 DATABASE_PASSWORD=telcox_password
+```
 
 ## Ejecutar la Aplicacion
 
