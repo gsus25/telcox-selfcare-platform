@@ -1,17 +1,14 @@
 # TelcoX Selfcare Platform
 
-Plataforma web de auto-gestion para clientes de telecomunicaciones. Permite visualizar saldo disponible, consumo de datos moviles y minutos disponibles mediante una interfaz conectada a un backend REST que simula la integracion con sistemas BSS/CRM.
+Plataforma web de autogestion para clientes de telecomunicaciones. Permite visualizar saldo disponible, consumo de datos moviles y minutos disponibles mediante una interfaz conectada a un backend REST que simula la integracion con sistemas BSS/CRM.
 
 ## Objetivo del reto
 
-El proyecto implementa un flujo end to end para el modulo de visualizacion de consumo:
+El proyecto implementa un flujo end-to-end para el modulo de visualizacion de consumo:
 
-```txt
 Angular UI -> Flask REST API -> MySQL -> respuesta al usuario
-```
 
 La aplicacion esta enfocada en demostrar:
-
 - Integracion frontend-backend.
 - Consulta de consumo de cliente.
 - Manejo de estados de carga, exito y error en la interfaz.
@@ -20,60 +17,23 @@ La aplicacion esta enfocada en demostrar:
 - Contenerizacion con Docker Compose.
 - Pruebas automatizadas backend y frontend.
 
-## Stack tecnologico
+## Stack Tecnologico
 
-- Frontend: Angular, TypeScript, CSS, Bootstrap.
-- Backend: Python, Flask, Flask-CORS.
+- Frontend: Angular 19 (Standalone Components), TypeScript, CSS, Bootstrap.
+- Backend: Python 3.12, Flask, Flask-CORS.
 - Base de datos: MySQL.
-- Testing backend: pytest.
-- Testing frontend: Angular TestBed, Jasmine, Karma, ChromeHeadless.
+- Testing: pytest (Backend) / Angular TestBed, Jasmine, Karma, ChromeHeadless (Frontend).
 - DevOps: Docker, Docker Compose.
 
-## Arquitectura
-
-Flujo principal de la solucion:
-
-```txt
-Usuario -> Angular Dashboard -> Flask API -> Servicio BSS simulado -> MySQL
-```
-
-El frontend consume una API REST del backend. El backend delega la consulta de consumo a un servicio que simula la integracion con BSS/CRM y obtiene los datos desde MySQL.
-
-Para un desglose completo de la estructura de carpetas, patrones de diseno, responsabilidades y flujo de datos, revisa la [Documentacion de Arquitectura](./docs/architecture.md).
-
-## Decisiones tecnicas
-
-### Cliente autenticado simulado
-
-El reto se centra en el modulo de visualizacion de consumo, no en autenticacion. Por eso el frontend consulta el cliente demo `1001`.
-
-En una implementacion productiva, el `customerId` vendria desde la sesion autenticada, token JWT o integracion con CRM.
-
-### Simulacion BSS/CRM
-
-El backend contiene un servicio llamado `mock_bss_service.py`. Este servicio representa la integracion con un sistema BSS/CRM. Para efectos del reto, los datos se almacenan en MySQL mediante un seed inicial.
-
-Esto permite demostrar una integracion real de backend con base de datos sin construir un BSS completo.
-
-### Puerto backend
-
-El backend corre internamente en el puerto `5000`, pero se expone localmente en `5001`
-
-## Requisitos previos
+## Requisitos Previos
 
 - Docker Desktop instalado y en ejecucion.
 - Docker Compose disponible.
 
-Opcional para desarrollo local sin Docker:
+## Variables de Entorno
 
-- Node.js compatible con Angular 19.
-- Python 3.12.
+El archivo .env.example documenta las variables usadas por la solucion:
 
-## Variables de entorno
-
-El archivo `.env.example` documenta las variables usadas por la solucion:
-
-```env
 MYSQL_DATABASE=telcox_db
 MYSQL_USER=telcox_user
 MYSQL_PASSWORD=telcox_password
@@ -87,81 +47,28 @@ DATABASE_PORT=3306
 DATABASE_NAME=telcox_db
 DATABASE_USER=telcox_user
 DATABASE_PASSWORD=telcox_password
-```
 
-## Ejecutar la aplicacion
+## Ejecutar la Aplicacion
 
-Desde la raiz del proyecto:
+Desde la raiz del proyecto, inicializa los contenedores:
 
-```bash
 docker compose up --build
-```
 
 Servicios disponibles:
-
-```txt
-Frontend: http://localhost:4200
-Backend:  http://localhost:5001/api/health
-MySQL:    localhost:3307
-```
-
-Nota: MySQL no expone una interfaz web. El puerto `3307` queda disponible para conectarse desde un cliente MySQL local usando las credenciales documentadas en `.env.example`.
+- Frontend: http://localhost:4200
+- Backend:  http://localhost:5001/api/health
+- MySQL:    localhost:3307 (No expone interfaz web, accesible via cliente SQL).
 
 Para detener los servicios:
-
-```bash
 docker compose down
-```
 
-Para reiniciar desde cero, incluyendo la base de datos:
-
-```bash
+Para reiniciar desde cero (incluyendo la eliminacion de volumenes de base de datos):
 docker compose down -v
 docker compose up --build
-```
 
-## Datos demo
+## Documentacion del Proyecto
 
-Los datos iniciales se cargan desde:
-
-```txt
-infra/mysql/init.sql
-```
-
-Clientes disponibles:
-
-```txt
-1001 - Ana Torres
-1002 - Carlos Mejia
-```
-
-El dashboard consulta por defecto el cliente `1001`, simulando un usuario autenticado.
-
-## API REST
-
-El backend expone endpoints para consultar el estado de salud del sistema y el consumo del cliente.
-
-Para ver los contratos de los endpoints, ejemplos de peticiones/respuestas JSON y codigos de error, consulta la [Documentacion de la API](./docs/api.md).
-
-## Ejecutar pruebas
-
-Backend:
-
-```bash
-docker compose run --rm backend pytest
-```
-
-Frontend:
-
-```bash
-cd frontend
-npm test -- --watch=false --browsers=ChromeHeadless
-```
-
-Para detalles sobre la estrategia de testing, herramientas utilizadas y cobertura, visita la [Documentacion de Pruebas](./docs/testing.md).
-
-## Modulo de consumo
-
-El modulo principal permite visualizar saldo, consumo de datos moviles, consumo de minutos, estado del servicio y ultima consulta desde una interfaz de autogestion.
-
-Para entender el funcionamiento del modulo, sus archivos principales, flujo de datos, estados de UI y escenarios de error, revisa la [Documentacion del Modulo de Consumo](./docs/consumption-module.md).
+Toda la documentacion tecnica se encuentra en la carpeta /docs:
+- Arquitectura y Decisiones Tecnicas: ./docs/architecture.md
+- Documentacion de la API: ./docs/api.md
+- Estrategia de Pruebas: ./docs/testing.md
