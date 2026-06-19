@@ -4,248 +4,90 @@ Documentacion de la API REST del modulo de visualizacion de consumo de TelcoX Se
 
 ## Base URL
 
-En ambiente local con Docker Compose:
+En ambiente local con Docker Compose: http://localhost:5001
+*(El backend corre internamente en el contenedor por el puerto 5000, pero se expone al host en el puerto 5001).*
 
-```txt
-http://localhost:5001
-```
+## Formato de Respuesta
+Todas las respuestas de la API utilizan formato JSON (Content-Type: application/json).
 
-El backend corre internamente en el contenedor por el puerto `5000`, pero se expone al host en el puerto `5001`.
-
-## Formato de respuesta
-
-La API responde en formato JSON.
-
-```http
-Content-Type: application/json
-```
+---
 
 ## Endpoints
 
-### Health Check
+### 1. Health Check
+Valida el estado del servicio backend.
 
-Permite validar que el backend esta levantado.
-
-```http
-GET /api/health
-```
-
-URL local:
-
-```txt
-http://localhost:5001/api/health
-```
-
-#### Respuesta exitosa
-
-Status:
-
-```txt
-200 OK
-```
-
-Body:
-
-```json
+- URL: GET /api/health
+- Response (200 OK):
 {
   "status": "ok"
 }
-```
 
-## Consulta de consumo del cliente
+### 2. Consulta de Consumo del Cliente
+Obtiene el saldo, consumo de datos, consumo de minutos y fecha de ultima actualizacion.
 
-Obtiene el saldo, consumo de datos, consumo de minutos y fecha de ultima actualizacion de un cliente.
+- URL: GET /api/customers/{customerId}/usage
+- Path Parameters:
+  - customerId (string, requerido): Identificador del cliente.
 
-```http
-GET /api/customers/{customerId}/usage
-```
+Clientes demo disponibles:
+- 1001 - Ana Torres
+- 1002 - Carlos Mejia
 
-### Parametros de ruta
+#### Respuesta Exitosa (200 OK)
+*Nota: Los valores numericos de consumo (balance, total, used) se manejan con un maximo de 2 decimales para precision en UI.*
 
-| Parametro | Tipo | Requerido | Descripcion |
-|---|---|---:|---|
-| `customerId` | string | Si | Identificador del cliente en el sistema BSS/CRM simulado. |
-
-### Clientes demo disponibles
-
-| Customer ID | Nombre |
-|---|---|
-| `1001` | Ana Torres |
-| `1002` | Carlos Mejia |
-
-### Ejemplo de request
-
-```txt
-http://localhost:5001/api/customers/1001/usage
-```
-
-### Respuesta exitosa
-
-Status:
-
-```txt
-200 OK
-```
-
-Body:
-
-```json
 {
-  "balance": 18.75,
   "customerId": "1001",
   "customerName": "Ana Torres",
+  "balance": 18.75,
   "dataUsage": {
-    "percentage": 36,
-    "total": 20.0,
+    "used": 7.20,
+    "total": 20.00,
     "unit": "GB",
-    "used": 7.2
+    "percentage": 36
   },
-  "lastUpdated": "2026-06-19T16:30:00+00:00",
   "minutesUsage": {
-    "percentage": 32,
+    "used": 320,
     "total": 1000,
     "unit": "minutes",
-    "used": 320
-  }
+    "percentage": 32
+  },
+  "lastUpdated": "2026-06-19T16:30:00+00:00"
 }
-```
 
-### Campos de respuesta
+#### Respuestas de Error
+La API devuelve errores estructurados para facilitar su manejo en el frontend.
 
-| Campo | Tipo | Descripcion |
-|---|---|---|
-| `customerId` | string | Identificador del cliente. |
-| `customerName` | string | Nombre del cliente. |
-| `balance` | number | Saldo disponible del cliente. |
-| `dataUsage.used` | number | Datos consumidos. |
-| `dataUsage.total` | number | Total de datos disponibles. |
-| `dataUsage.unit` | string | Unidad del paquete de datos. |
-| `dataUsage.percentage` | number | Porcentaje de datos consumidos. |
-| `minutesUsage.used` | number | Minutos consumidos. |
-| `minutesUsage.total` | number | Total de minutos disponibles. |
-| `minutesUsage.unit` | string | Unidad del paquete de minutos. |
-| `minutesUsage.percentage` | number | Porcentaje de minutos consumidos. |
-| `lastUpdated` | string | Fecha de ultima actualizacion en formato ISO 8601. |
-
-## Errores
-
-La API devuelve errores estructurados con los campos:
-
-```json
-{
-  "error": "codigo_del_error",
-  "message": "Mensaje legible para el usuario o consumidor de API."
-}
-```
-
-### Cliente no encontrado
-
-Ocurre cuando el `customerId` no existe en el BSS/CRM simulado.
-
-Request:
-
-```txt
-http://localhost:5001/api/customers/9999/usage
-```
-
-Status:
-
-```txt
-404 Not Found
-```
-
-Body:
-
-```json
+404 Not Found (Cliente inexistente)
 {
   "error": "customer_not_found",
   "message": "No encontramos informacion de consumo para este cliente."
 }
-```
 
-### BSS no disponible
-
-Ocurre cuando el backend no puede consultar la fuente de datos del BSS/CRM simulado, por ejemplo si MySQL no esta disponible.
-
-Status:
-
-```txt
-503 Service Unavailable
-```
-
-Body:
-
-```json
+503 Service Unavailable (BSS/MySQL caido)
 {
   "error": "bss_unavailable",
   "message": "El sistema BSS no esta disponible temporalmente."
 }
-```
 
-### Error interno
-
-Ocurre ante un error inesperado del backend.
-
-Status:
-
-```txt
 500 Internal Server Error
-```
-
-Body:
-
-```json
 {
   "error": "internal_server_error",
   "message": "No pudimos consultar el consumo en este momento."
 }
-```
 
-## Como probar la API
+---
 
-Con los servicios levantados:
+## Pruebas Manuales (cURL)
 
-```bash
-docker compose up --build
-```
+Con el entorno Docker en ejecucion, puedes validar los endpoints rapidamente:
 
-Probar health check:
-
-```bash
+# Health check
 curl http://localhost:5001/api/health
-```
 
-Probar cliente exitoso:
-
-```bash
+# Cliente exitoso
 curl http://localhost:5001/api/customers/1001/usage
-```
 
-Probar segundo cliente:
-
-```bash
-curl http://localhost:5001/api/customers/1002/usage
-```
-
-Probar cliente inexistente:
-
-```bash
+# Cliente inexistente
 curl http://localhost:5001/api/customers/9999/usage
-```
-
-## Relacion con el frontend
-
-El frontend Angular consume el endpoint:
-
-```txt
-GET http://localhost:5001/api/customers/1001/usage
-```
-
-Actualmente el `customerId` se mantiene fijo como `1001` para simular un usuario autenticado.
-
-En una version productiva, este identificador deberia provenir de:
-
-- Sesion autenticada.
-- Token JWT.
-- Perfil de usuario del CRM.
-- Seleccion de linea asociada a la cuenta.
