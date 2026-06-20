@@ -29,6 +29,7 @@ Ejecucion:
 
 ```bash
 cd frontend
+npm ci
 npm test -- --watch=false --browsers=ChromeHeadless
 ```
 
